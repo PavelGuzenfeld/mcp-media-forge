@@ -4,7 +4,7 @@
 
 Phased build plan — start with highest-ROI tools, validate the architecture, then expand.
 
-> **Cross-references**: Tool interfaces and `MediaToolResult` schema are defined in [architecture.md](architecture.md#3-tool-interface-design). Test cases per tool are in [verification-plan.md](verification-plan.md#3-component-tests-individual-tools). Agent workflows are in [agents.md](agents.md). Tool evaluation is in [research-tools-apis.md](research-tools-apis.md).
+> **Cross-references**: Tool interfaces and `MediaToolResult` schema are defined in [architecture.md](architecture.md#3-tool-interface-design). Test cases per tool are in [verification-plan.md](verification-plan.md#3-component-tests-individual-tools). Agent build instructions are in [agents.md](agents.md). Tool evaluation is in [research-tools-apis.md](research-tools-apis.md).
 
 ---
 

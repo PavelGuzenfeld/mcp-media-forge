@@ -320,7 +320,7 @@ MCP server runs on host (npm). Individual tools are either:
 
 ## 8. Integration with CI/CD
 
-The MCP server can run headless in CI to keep generated assets fresh. See [agents.md](agents.md#3-cicd-agent) for the full CI/CD agent specification.
+The MCP server can run headless in CI to keep generated assets fresh. See [agents.md](agents.md#11-cicd) for CI/CD workflow details.
 
 ```yaml
 # .github/workflows/docs-media.yml

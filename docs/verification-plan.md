@@ -4,7 +4,7 @@
 
 Comprehensive testing and validation strategy for every component of the Media Forge MCP server.
 
-> **Cross-references**: Tool interfaces and `MediaToolResult` schema are defined in [architecture.md](architecture.md#3-tool-interface-design). Phase schedule is in [implementation-plan.md](implementation-plan.md). Agent workflows are in [agents.md](agents.md).
+> **Cross-references**: Tool interfaces and `MediaToolResult` schema are defined in [architecture.md](architecture.md#3-tool-interface-design). Phase schedule is in [implementation-plan.md](implementation-plan.md). Agent build instructions are in [agents.md](agents.md).
 
 ---
 

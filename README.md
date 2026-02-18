@@ -48,7 +48,7 @@ LLM Agent
 | [Research: Tools & APIs](docs/research-tools-apis.md) | Evaluation of rendering tools and APIs |
 | [Research: Markdown Embedding](docs/research-markdown-embedding.md) | How to embed rich media in .md files |
 | [Architecture](docs/architecture.md) | Protocol constraints, tool interfaces, caching, security |
-| [Agents & Workflows](docs/agents.md) | Agentic workflows, orchestration patterns, CI/CD |
+| [Agent Instructions](docs/agents.md) | Guide for AI coding agents building and maintaining this repo |
 | [Implementation Plan](docs/implementation-plan.md) | 4-phase build plan (Weeks 1-8) |
 | [Verification Plan](docs/verification-plan.md) | Testing strategy, acceptance criteria, benchmarks |
 | [Gemini Analysis](docs/research-gemini-analysis.md) | Original deep research (preserved with review notes) |
