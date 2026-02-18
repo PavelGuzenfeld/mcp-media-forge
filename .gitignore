@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Generated media (during development)
+docs/generated/
+
+# Environment
+.env
+.env.local
+
+# Docker
+.docker/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test output
+coverage/
+*.test-output/
+
+# Temporary
+tmp/
+*.tmp
