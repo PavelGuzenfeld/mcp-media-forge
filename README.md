@@ -48,7 +48,9 @@ LLM Agent
 | [Research: Tools & APIs](docs/research-tools-apis.md) | Evaluation of rendering tools and APIs |
 | [Research: Markdown Embedding](docs/research-markdown-embedding.md) | How to embed rich media in .md files |
 | [Architecture Analysis](docs/architecture.md) | Protocol constraints, async patterns, security |
+| [Agents & Workflows](docs/agents.md) | Agentic workflows, orchestration patterns, CI/CD |
 | [Implementation Plan](docs/implementation-plan.md) | Phased build plan with priorities |
+| [Verification Plan](docs/verification-plan.md) | Testing strategy, acceptance criteria, validation |
 
 ## Quick Reference: Priority Stack
 
