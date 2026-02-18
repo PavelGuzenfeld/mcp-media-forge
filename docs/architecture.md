@@ -136,58 +136,72 @@ Every tool returns a consistent structure:
 
 ```typescript
 interface MediaToolResult {
+  // Always present
   status: "completed" | "processing" | "error";
+
+  // Present when status = "completed"
   output_path?: string;          // relative to project root
   format?: string;               // svg, png, gif, mp4, pdf
   size_bytes?: number;
   embed_markdown?: string;       // ready-to-paste markdown
+  warning?: string;              // non-fatal issue (e.g., "File exceeds 5MB")
+
+  // Present when status = "processing"
   job_id?: string;               // for async operations
-  error_message?: string;        // structured error for self-healing
+  estimated_seconds?: number;    // estimated time to completion
+
+  // Present when status = "error"
+  error_message?: string;        // human-readable description
+  error_type?: string;           // syntax_error | rendering_error | timeout | dependency_missing | output_error
+  line?: number;                 // line number of error (if applicable)
+  suggestion?: string;           // how to fix (enables self-correcting loop)
 }
 ```
 
 ### 3.2 Tool Catalog
 
-#### P0: Diagrams
+#### P0: Core Diagrams
 
 ```typescript
-// Mermaid
+// Mermaid — flowcharts, sequence, ER, state, Gantt, pie, git graphs
 render_mermaid(code: string, format: "svg"|"png" = "svg", theme?: string): MediaToolResult
 
-// D2
+// D2 — architecture diagrams, complex layouts with containers/icons
 render_d2(code: string, format: "svg"|"png" = "svg", theme?: string, layout?: "dagre"|"elk"|"tala"): MediaToolResult
-
-// Graphviz
-render_graphviz(dot_source: string, engine: "dot"|"neato"|"fdp"|"circo" = "dot", format: "svg"|"png" = "svg"): MediaToolResult
 ```
 
-#### P1: Presentations & Charts
+#### P1: Extended Diagrams, Presentations & Charts
 
 ```typescript
-// Marp slides
-render_slides(markdown: string, theme?: string, format: "png"|"pdf"|"pptx" = "png"): MediaToolResult
-// When format=png, returns array of slide image paths
+// Graphviz — dependency graphs, network diagrams, large auto-layout graphs
+render_graphviz(dot_source: string, engine: "dot"|"neato"|"fdp"|"sfdp"|"twopi"|"circo" = "dot", format: "svg"|"png" = "svg"): MediaToolResult
 
-// Vega-Lite chart
+```typescript
+// Marp slides — presentation decks from Markdown
+render_slides(markdown: string, theme?: string, format: "png"|"pdf"|"pptx" = "png"): MediaToolResult
+// When format=png, returns array of slide image paths + embed_markdown with cover→PDF link
+
+// Vega-Lite chart — data visualizations from declarative JSON
 render_chart(spec_json: string, format: "svg"|"png" = "svg", scale?: number): MediaToolResult
 ```
+
+> **Note on ECharts**: Existing MCP servers ([antvis/mcp-server-chart](https://github.com/antvis/mcp-server-chart), [hustcc/mcp-echarts](https://github.com/hustcc/mcp-echarts)) provide broader chart coverage. These can be composed alongside Media Forge if Vega-Lite is insufficient for a use case. Media Forge implements Vega-Lite directly because `vl-convert` enables zero-dependency server-side rendering.
 
 #### P2: Animations & Video
 
 ```typescript
-// Manim animation
+// Manim animation — math/technical explainer animations (async for quality>=medium)
 render_animation(scene_code: string, quality: "low"|"medium"|"high" = "medium", format: "gif"|"mp4" = "gif"): MediaToolResult
 
-// Terminal recording to GIF
+// Terminal recording to GIF — CLI demos from commands or .cast files
 terminal_to_gif(commands: string[], shell?: string): MediaToolResult
-// or
 cast_to_gif(cast_file_path: string, theme?: string): MediaToolResult
 
-// Image sequence to GIF
+// Image sequence to animated GIF — slide walkthroughs, step-by-step diagrams
 images_to_gif(image_paths: string[], fps?: number, width?: number): MediaToolResult
 
-// Video assembly (async)
-assemble_video(timeline: TimelineSpec): MediaToolResult  // returns job_id
+// Video assembly from timeline JSON (always async — returns job_id)
+assemble_video(timeline: TimelineSpec): MediaToolResult
 check_job(job_id: string): MediaToolResult
 ```
 
@@ -306,7 +320,7 @@ MCP server runs on host (npm). Individual tools are either:
 
 ## 8. Integration with CI/CD
 
-The MCP server can run headless in CI to keep generated assets fresh:
+The MCP server can run headless in CI to keep generated assets fresh. See [agents.md](agents.md#3-cicd-agent) for the full CI/CD agent specification.
 
 ```yaml
 # .github/workflows/docs-media.yml

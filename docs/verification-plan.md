@@ -4,6 +4,8 @@
 
 Comprehensive testing and validation strategy for every component of the Media Forge MCP server.
 
+> **Cross-references**: Tool interfaces and `MediaToolResult` schema are defined in [architecture.md](architecture.md#3-tool-interface-design). Phase schedule is in [implementation-plan.md](implementation-plan.md). Agent workflows are in [agents.md](agents.md).
+
 ---
 
 ## 1. Testing Layers
@@ -50,9 +52,11 @@ Comprehensive testing and validation strategy for every component of the Media F
 
 | Test | Input | Expected | Pass Criteria |
 |---|---|---|---|
-| Successful result | Completed render | All required fields present | `status`, `output_path`, `format`, `embed_markdown` |
+| Successful result | Completed render | All required fields present | `status`, `output_path`, `format`, `size_bytes`, `embed_markdown` |
+| Successful with warning | Large output file | Warning present | `status="completed"`, `warning` non-empty |
 | Error result | Failed render | Error fields present | `status="error"`, `error_message`, `error_type` |
-| Async result | Job submitted | Job fields present | `status="processing"`, `job_id` |
+| Error with suggestion | Syntax error | Fix suggestion present | `error_type="syntax_error"`, `line` and `suggestion` populated |
+| Async result | Job submitted | Job fields present | `status="processing"`, `job_id`, `estimated_seconds` |
 | embed_markdown format | SVG output | Valid markdown image syntax | Matches `![...](./docs/generated/...)` |
 
 ---
@@ -98,6 +102,8 @@ Each tool tested in isolation: input → tool function → verify output file.
 | Engine: dot | code + engine="dot" | SVG | Hierarchical layout |
 | Engine: neato | code + engine="neato" | SVG | Spring layout |
 | Engine: fdp | code + engine="fdp" | SVG | Force-directed |
+| Engine: sfdp | code + engine="sfdp" | SVG | Scalable force-directed (large graphs) |
+| Engine: twopi | code + engine="twopi" | SVG | Radial layout |
 | Engine: circo | code + engine="circo" | SVG | Circular layout |
 | Large graph (100+ nodes) | Generated graph | SVG | Completes in <10s |
 | Invalid DOT | `digraph { -> }` | Structured error | Error message present |
@@ -371,7 +377,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       media-forge:
-        image: ghcr.io/user/mcp-media-forge:latest
+        image: ghcr.io/PavelGuzenfeld/mcp-media-forge:latest
     steps:
       - uses: actions/checkout@v4
       - run: npm ci

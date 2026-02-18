@@ -47,24 +47,28 @@ LLM Agent
 | [Research: MCP Landscape](docs/research-mcp-landscape.md) | Existing MCP servers for visual content |
 | [Research: Tools & APIs](docs/research-tools-apis.md) | Evaluation of rendering tools and APIs |
 | [Research: Markdown Embedding](docs/research-markdown-embedding.md) | How to embed rich media in .md files |
-| [Architecture Analysis](docs/architecture.md) | Protocol constraints, async patterns, security |
+| [Architecture](docs/architecture.md) | Protocol constraints, tool interfaces, caching, security |
 | [Agents & Workflows](docs/agents.md) | Agentic workflows, orchestration patterns, CI/CD |
-| [Implementation Plan](docs/implementation-plan.md) | Phased build plan with priorities |
-| [Verification Plan](docs/verification-plan.md) | Testing strategy, acceptance criteria, validation |
+| [Implementation Plan](docs/implementation-plan.md) | 4-phase build plan (Weeks 1-8) |
+| [Verification Plan](docs/verification-plan.md) | Testing strategy, acceptance criteria, benchmarks |
+| [Gemini Analysis](docs/research-gemini-analysis.md) | Original deep research (preserved with review notes) |
 
 ## Quick Reference: Priority Stack
 
-| Priority | Tool | Produces | Status |
-|---|---|---|---|
-| P0 | Mermaid (mmdc) | Flowcharts, sequence, ER diagrams | Existing MCP servers available |
-| P0 | D2 | Architecture diagrams | CLI wrapper needed |
-| P1 | Marp | Slide decks (PNG/PDF) | CLI wrapper needed |
-| P1 | Vega-Lite / ECharts | Data charts | JSON renderer needed |
-| P2 | Manim | Technical animations (GIF/MP4) | Python wrapper needed |
-| P2 | Asciinema + agg | Terminal demos (GIF) | CLI pipeline needed |
-| P2 | FFmpeg | Video assembly | Filtergraph builder needed |
-| P3 | SVG templates | Infographics | Custom engine needed |
-| P3 | Excalidraw | Hand-drawn diagrams | Existing MCP server available |
+| Priority | Tool | MCP Tool Name | Produces | Status |
+|---|---|---|---|---|
+| P0 | Mermaid (mmdc) | `render_mermaid` | Flowcharts, sequence, ER diagrams | Existing MCP servers available |
+| P0 | D2 | `render_d2` | Architecture diagrams | CLI wrapper needed |
+| P1 | Graphviz (DOT) | `render_graphviz` | Dependency graphs, network diagrams | CLI wrapper needed |
+| P1 | Marp | `render_slides` | Slide decks (PNG/PDF) | CLI wrapper needed |
+| P1 | Vega-Lite | `render_chart` | Data charts (bar, line, scatter, etc.) | JSON renderer needed |
+| P2 | Manim | `render_animation` | Technical animations (GIF/MP4) | Python wrapper needed |
+| P2 | Asciinema + agg | `terminal_to_gif` | Terminal demos (GIF) | CLI pipeline needed |
+| P2 | FFmpeg | `assemble_video` | Video assembly (MP4/GIF) | Filtergraph builder needed |
+| P3 | SVG templates | `render_infographic` | Infographics | Custom engine needed |
+| P3 | Excalidraw | `render_excalidraw` | Hand-drawn diagrams | Existing MCP server available |
+
+> **Note on ECharts**: [antvis/mcp-server-chart](https://github.com/antvis/mcp-server-chart) and [hustcc/mcp-echarts](https://github.com/hustcc/mcp-echarts) are existing MCP servers for charts. If Vega-Lite proves insufficient for a use case, these can be composed alongside Media Forge rather than reimplemented. See [Research: Tools & APIs](docs/research-tools-apis.md#echarts) for comparison.
 
 ## License
 

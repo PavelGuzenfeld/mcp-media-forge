@@ -4,6 +4,8 @@
 
 Phased build plan — start with highest-ROI tools, validate the architecture, then expand.
 
+> **Cross-references**: Tool interfaces and `MediaToolResult` schema are defined in [architecture.md](architecture.md#3-tool-interface-design). Test cases per tool are in [verification-plan.md](verification-plan.md#3-component-tests-individual-tools). Agent workflows are in [agents.md](agents.md). Tool evaluation is in [research-tools-apis.md](research-tools-apis.md).
+
 ---
 
 ## Phase 0: Scaffold (Week 1)
@@ -88,8 +90,8 @@ mcp-media-forge/
   - Install D2 binary in Docker image
   - Support theme selection (default, neutral-default, terminal, etc.)
   - Support layout engine selection (dagre, elk, tala)
-- [ ] Implement `render_graphviz` — DOT to SVG/PNG
-  - Support engine selection (dot, neato, fdp, sfdp, twopi, circo)
+- [ ] Implement `render_graphviz` — DOT to SVG/PNG (P1)
+  - Support all 6 engine selections (dot, neato, fdp, sfdp, twopi, circo)
 - [ ] Implement `render_slides` — Marp markdown to PNG/PDF
   - Install Marp CLI + Chromium in Docker image
   - Export individual slide PNGs for embedding

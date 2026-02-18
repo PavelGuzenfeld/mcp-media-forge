@@ -4,6 +4,8 @@
 
 How LLM agents use Media Forge tools to autonomously generate and maintain visual documentation.
 
+> **Cross-references**: Tool interfaces are defined in [architecture.md](architecture.md#3-tool-interface-design). Phase schedule is in [implementation-plan.md](implementation-plan.md). Test cases per tool are in [verification-plan.md](verification-plan.md#3-component-tests-individual-tools).
+
 ---
 
 ## 1. Agent Roles
@@ -182,8 +184,8 @@ Agent: "Render this Manim scene"
 Runs in GitHub Actions on code push. Headless, no human interaction.
 
 ```yaml
-# .github/workflows/docs-refresh.yml
-name: Refresh Documentation Media
+# .github/workflows/docs-media.yml
+name: Regenerate Documentation Media
 on:
   push:
     paths: ['src/**', 'docs/**/*.md']
@@ -205,7 +207,7 @@ jobs:
         run: |
           git add docs/generated/
           git diff --cached --quiet || \
-            git commit -m "docs: refresh generated media"
+            git commit -m "docs: regenerate media assets"
           git push
 ```
 

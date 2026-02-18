@@ -6,6 +6,8 @@
 
 This document catalogs existing MCP servers that produce visual content — presentations, diagrams, charts, infographics, and video. The goal is to identify what already exists (and can be reused) versus what needs to be built.
 
+> **Cross-references**: Tool evaluation and recommendations are in [research-tools-apis.md](research-tools-apis.md). The tools selected for Media Forge are defined in [architecture.md](architecture.md#32-tool-catalog).
+
 ---
 
 ## 1. Presentation Generation

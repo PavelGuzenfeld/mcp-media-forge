@@ -4,6 +4,8 @@
 
 Evaluation of rendering tools and APIs that could be wrapped as MCP services, focusing on suitability for embedding into Markdown technical documentation.
 
+> **Cross-references**: Existing MCP servers are cataloged in [research-mcp-landscape.md](research-mcp-landscape.md). Embedding patterns for each output format are in [research-markdown-embedding.md](research-markdown-embedding.md). The final tool selection is in [architecture.md](architecture.md#32-tool-catalog).
+
 ---
 
 ## 1. Presentation Generators
@@ -16,7 +18,7 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 - **Quality**: Clean, professional. Custom themes via CSS. Limited animation.
 - **Embeddability**: PNG per slide embeds directly in Markdown. PDF for download links.
 - **MCP fit**: **Excellent**. Stateless (Markdown in, image/HTML out). Lightweight. No external services.
-- **Tool design**: `marp_to_images(markdown, theme)`, `marp_to_pdf(markdown)`
+- **Tool design**: `render_slides(markdown, theme, format)` — see [architecture.md](architecture.md#32-tool-catalog)
 
 ### Reveal.js
 
@@ -73,7 +75,7 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 - **Quality**: Best automatic graph layout. Industry standard for decades.
 - **Embeddability**: SVG/PNG embed perfectly.
 - **MCP fit**: **Excellent**. Fast, lightweight native binary.
-- **Tool design**: `graphviz_render(dot_source, engine, format)` where engine is dot/neato/fdp/etc.
+- **Tool design**: `render_graphviz(dot_source, engine, format)` where engine is dot/neato/fdp/sfdp/twopi/circo — see [architecture.md](architecture.md#32-tool-catalog)
 
 ### PlantUML
 
@@ -101,7 +103,7 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 - **Quality**: Excellent for data visualization. Declarative JSON that LLMs generate well.
 - **Embeddability**: SVG/PNG embed perfectly.
 - **MCP fit**: **Good for data charts**. Not a general-purpose diagram tool. Cannot do flowcharts, architecture diagrams, or sequence diagrams.
-- **Tool design**: `render_vegalite(spec_json, format)`
+- **Tool design**: `render_chart(spec_json, format, scale)` — see [architecture.md](architecture.md#32-tool-catalog)
 
 ### ECharts
 
@@ -123,7 +125,7 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 - **Quality**: **Exceptional** for math/technical animations. Smooth vector animations, LaTeX, 3D.
 - **Embeddability**: GIF inline in Markdown. MP4 for links/hosting.
 - **MCP fit**: **Good**. LLMs generate Manim scene code reliably. CPU-intensive rendering. Docker recommended.
-- **Tool design**: `manim_render(scene_code, quality, format)` returns GIF/MP4
+- **Tool design**: `render_animation(scene_code, quality, format)` returns GIF/MP4 — see [architecture.md](architecture.md#32-tool-catalog)
 
 ### FFmpeg
 
@@ -132,7 +134,7 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 - **Output**: Any video/audio/image format
 - **Quality**: Lossless processing. Output depends on input.
 - **MCP fit**: **Good as backend**. Not generative itself. Essential for format conversion, GIF creation, video composition.
-- **Tool design**: `images_to_gif(images, fps)`, `video_to_gif(mp4, start, duration)`, `assemble_video(timeline_json)`
+- **Tool design**: `images_to_gif(image_paths, fps, width)`, `assemble_video(timeline)` — see [architecture.md](architecture.md#32-tool-catalog)
 
 ### Asciinema + agg
 
@@ -142,7 +144,7 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 - **Quality**: Perfect terminal reproduction. Text-based source format.
 - **Embeddability**: GIF universal. SVG preview links to interactive player.
 - **MCP fit**: **Excellent**. Lightweight pipeline. Tiny output files.
-- **Tool design**: `terminal_to_gif(commands_or_cast_file)` returns GIF
+- **Tool design**: `terminal_to_gif(commands, shell)` or `cast_to_gif(cast_file_path, theme)` — see [architecture.md](architecture.md#32-tool-catalog)
 
 ### Remotion (React Videos)
 
@@ -207,8 +209,8 @@ Evaluation of rendering tools and APIs that could be wrapped as MCP services, fo
 |---|---|---|---|---|---|---|
 | Mermaid (mmdc) | Text DSL | SVG/PNG | Free | <1s | Yes | **P0** |
 | D2 | Text DSL | SVG/PNG | Free | <1s | Yes | **P0** |
-| Marp | Markdown | PNG/PDF | Free | <2s | Yes | **P1** |
 | Graphviz | DOT | SVG/PNG | Free | <1s | Yes | **P1** |
+| Marp | Markdown | PNG/PDF | Free | <2s | Yes | **P1** |
 | Vega-Lite | JSON | SVG/PNG | Free | <1s | Yes | **P1** |
 | Manim | Python | GIF/MP4 | Free | 10-60s | Yes | **P2** |
 | Asciinema+agg | Terminal/.cast | GIF | Free | <5s | Yes | **P2** |

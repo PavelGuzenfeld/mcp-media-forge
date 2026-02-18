@@ -4,6 +4,8 @@
 
 How to embed presentations, diagrams, videos, and animations into `.md` files across different platforms (GitHub, GitLab, MkDocs, Docusaurus, VS Code).
 
+> **Cross-references**: Platform rendering is validated in [verification-plan.md](verification-plan.md#6-platform-rendering-validation). Tool output formats are in [research-tools-apis.md](research-tools-apis.md#6-summary-tool-selection-matrix).
+
 ---
 
 ## 1. Platform Rendering Capabilities
@@ -288,13 +290,17 @@ module.exports = {
 ```
 project/
   docs/
-    generated/         # MCP-generated output (gitignored or committed)
-      diagrams/        # SVG, PNG
-      slides/          # PNG per slide, PDF
-      animations/      # GIF
-    assets/            # Hand-crafted assets
+    generated/         # MCP-generated output — flat directory, content-hashed filenames
+      mermaid-a1b2c3.svg
+      d2-4d5e6f.svg
+      marp-slide-001-7g8h9i.png
+      manim-scene-j0k1l2.gif
+      manifest.json    # logical name → hashed filename mapping
+    assets/            # Hand-crafted assets (not auto-generated)
     architecture.md
 ```
+
+> **Convention**: All Media Forge output uses flat `docs/generated/{tool}-{hash}.{ext}` naming. See [architecture.md](architecture.md#13-output-path-convention) for details.
 
 **Guidelines**:
 - SVG: commit directly (text-based, diffs)
