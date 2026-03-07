@@ -1,10 +1,10 @@
 # Examples
 
-Sample inputs for each tool with the expected MCP tool call and result.
+Sample inputs for each tool with the MCP tool call and expected result.
 
-## Mermaid — Flowchart
+## Mermaid -- Flowchart
 
-**Input** (`mermaid/flowchart.mmd`):
+**Input** ([`mermaid/flowchart.mmd`](mermaid/flowchart.mmd)):
 ```mermaid
 graph TD
     A[Start] --> B{Decision}
@@ -26,22 +26,26 @@ graph TD
 }
 ```
 
-**Expected Result**:
+**Result**:
 ```json
 {
   "status": "completed",
   "output_path": "docs/generated/mermaid-<hash>.svg",
   "format": "svg",
-  "size_bytes": 12480,
-  "embed_markdown": "![Diagram](./docs/generated/mermaid-<hash>.svg)"
+  "size_bytes": 12891,
+  "embed_markdown": "![mermaid](./docs/generated/mermaid-<hash>.svg)"
 }
 ```
 
+**Rendered output:**
+
+<img src="../docs/generated/example-flowchart.svg" width="400" alt="Mermaid flowchart">
+
 ---
 
-## Mermaid — Sequence Diagram
+## Mermaid -- Sequence Diagram
 
-**Input** (`mermaid/sequence.mmd`):
+**Input** ([`mermaid/sequence.mmd`](mermaid/sequence.mmd)):
 ```mermaid
 sequenceDiagram
     participant C as Client
@@ -53,14 +57,16 @@ sequenceDiagram
     S-->>C: JSON Response
 ```
 
-**Expected**: SVG with 3 participants and 4 arrows.
+**Rendered output:**
+
+<img src="../docs/generated/example-sequence.svg" width="500" alt="Mermaid sequence diagram">
 
 ---
 
-## D2 — Architecture Diagram
+## D2 -- Architecture Diagram
 
-**Input** (`d2/architecture.d2`):
-```d2
+**Input** ([`d2/architecture.d2`](d2/architecture.d2)):
+```
 direction: right
 
 client: Client {
@@ -92,22 +98,26 @@ server.api -> server.db: Query
 }
 ```
 
-**Expected Result**:
+**Result**:
 ```json
 {
   "status": "completed",
   "output_path": "docs/generated/d2-<hash>.svg",
   "format": "svg",
-  "size_bytes": 18200,
-  "embed_markdown": "![Diagram](./docs/generated/d2-<hash>.svg)"
+  "size_bytes": 27547,
+  "embed_markdown": "![d2](./docs/generated/d2-<hash>.svg)"
 }
 ```
 
+**Rendered output:**
+
+<img src="../docs/generated/example-architecture.svg" width="600" alt="D2 architecture diagram">
+
 ---
 
-## Graphviz — Dependency Graph
+## Graphviz -- Dependency Graph
 
-**Input** (`graphviz/dependencies.dot`):
+**Input** ([`graphviz/dependencies.dot`](graphviz/dependencies.dot)):
 ```dot
 digraph dependencies {
     rankdir=LR;
@@ -133,22 +143,26 @@ digraph dependencies {
 }
 ```
 
-**Expected Result**:
+**Result**:
 ```json
 {
   "status": "completed",
   "output_path": "docs/generated/graphviz-<hash>.svg",
   "format": "svg",
-  "size_bytes": 8500,
-  "embed_markdown": "![Diagram](./docs/generated/graphviz-<hash>.svg)"
+  "size_bytes": 4511,
+  "embed_markdown": "![graphviz](./docs/generated/graphviz-<hash>.svg)"
 }
 ```
 
+**Rendered output:**
+
+<img src="../docs/generated/example-dependencies.svg" width="500" alt="Graphviz dependency graph">
+
 ---
 
-## Vega-Lite — Bar Chart
+## Vega-Lite -- Bar Chart
 
-**Input** (`vegalite/bar-chart.json`):
+**Input** ([`vegalite/bar-chart.json`](vegalite/bar-chart.json)):
 ```json
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -183,53 +197,52 @@ digraph dependencies {
 }
 ```
 
-**Expected Result**:
+**Result**:
 ```json
 {
   "status": "completed",
   "output_path": "docs/generated/vegalite-<hash>.svg",
   "format": "svg",
-  "size_bytes": 6800,
-  "embed_markdown": "![Chart](./docs/generated/vegalite-<hash>.svg)"
+  "size_bytes": 7921,
+  "embed_markdown": "![vegalite](./docs/generated/vegalite-<hash>.svg)"
 }
 ```
+
+**Rendered output:**
+
+<img src="../docs/generated/example-bar-chart.svg" width="450" alt="Vega-Lite bar chart">
 
 ---
 
 ## Error Examples
 
 ### Invalid Mermaid syntax
+
 ```json
 {
   "tool": "render_mermaid",
-  "arguments": {
-    "code": "graph TD\n    A -> B"
-  }
+  "arguments": { "code": "not valid mermaid at all }{}{" }
 }
 ```
 
-**Expected Error**:
 ```json
 {
   "status": "error",
   "error_type": "syntax_error",
-  "error_message": "Parse error on line 2: Expected '-->' but found '->'",
-  "line": 2,
+  "error_message": "...",
   "suggestion": "Check Mermaid syntax at https://mermaid.js.org/syntax/"
 }
 ```
 
 ### Invalid Vega-Lite JSON
+
 ```json
 {
   "tool": "render_chart",
-  "arguments": {
-    "spec_json": "not valid json"
-  }
+  "arguments": { "spec_json": "not valid json" }
 }
 ```
 
-**Expected Error**:
 ```json
 {
   "status": "error",
@@ -240,16 +253,14 @@ digraph dependencies {
 ```
 
 ### Container not running
+
 ```json
 {
   "tool": "render_d2",
-  "arguments": {
-    "code": "a -> b"
-  }
+  "arguments": { "code": "a -> b" }
 }
 ```
 
-**Expected Error**:
 ```json
 {
   "status": "error",

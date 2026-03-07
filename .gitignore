@@ -5,8 +5,9 @@ node_modules/
 dist/
 build/
 
-# Generated media (during development)
-docs/generated/
+# Generated media (during development — example-* files are tracked)
+docs/generated/*
+!docs/generated/example-*
 
 # Environment
 .env
