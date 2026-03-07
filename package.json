@@ -1,0 +1,55 @@
+{
+  "name": "mcp-media-forge",
+  "version": "0.1.0",
+  "description": "MCP server for generating diagrams, charts, presentations, and animations for Markdown documentation",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "mcp-media-forge": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:component": "vitest run tests/component",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "diagrams",
+    "mermaid",
+    "d2",
+    "graphviz",
+    "vega-lite",
+    "documentation",
+    "claude-code"
+  ],
+  "author": "Pavel Guzenfeld",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PavelGuzenfeld/mcp-media-forge.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "tsup": "^8.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

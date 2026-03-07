@@ -1,75 +1,131 @@
 # MCP Media Forge
 
-A Model Context Protocol (MCP) service for generating presentations, infographics, diagrams, and videos — designed for embedding into Markdown technical documentation.
+MCP server that generates diagrams, charts, and visual documentation from text DSLs — designed for embedding into Markdown.
 
-## Problem
+LLM agents call tools like `render_mermaid` or `render_d2` with text input, and get back file paths to SVG/PNG assets ready to embed in docs.
 
-Technical documentation suffers from a **synchronization gap**: code evolves rapidly while visual assets (diagrams, slide decks, explainer videos) stagnate due to high manual effort. Binary assets in `docs/` folders become stale within weeks of being created.
+## Tools
 
-## Solution
+| Tool | Input | Output | Status |
+|------|-------|--------|--------|
+| `render_mermaid` | Mermaid code | SVG/PNG flowcharts, sequence, ER, state, Gantt | Implemented |
+| `render_d2` | D2 code | SVG/PNG architecture diagrams with containers/icons | Implemented |
+| `render_graphviz` | DOT code | SVG/PNG dependency graphs, network diagrams | Implemented |
+| `render_chart` | Vega-Lite JSON | SVG/PNG bar, line, scatter, area charts | Implemented |
+| `list_assets` | — | List of generated files | Implemented |
+| `render_slides` | Marp markdown | PNG/PDF slide decks | Planned |
+| `render_animation` | Manim Python | GIF/MP4 technical animations | Planned |
+| `terminal_to_gif` | Shell commands | GIF terminal recordings | Planned |
+| `assemble_video` | Timeline JSON | MP4/GIF video assembly | Planned |
 
-An MCP server that exposes media generation as tools, enabling LLM agents to produce and update visual documentation artifacts automatically. Assets are generated from **text-based source formats** (Mermaid, D2, Markdown slides, Manim scenes) stored alongside the code, keeping visuals in sync with the codebase.
+## Quick Start
 
-## Architecture
+### 1. Start the rendering container
+
+```bash
+cd docker
+docker compose up -d
+```
+
+This builds a container with Mermaid CLI, D2, Graphviz, and Vega-Lite renderers.
+
+### 2. Install and build the MCP server
+
+```bash
+npm install
+npm run build
+```
+
+### 3. Register with Claude Code
+
+Add to `~/.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "media-forge": {
+      "command": "node",
+      "args": ["/path/to/mcp-media-forge/dist/index.js"],
+      "env": {
+        "PROJECT_ROOT": "/path/to/your/project"
+      }
+    }
+  }
+}
+```
+
+### 4. Use it
+
+Ask Claude to generate a diagram:
+
+> "Create a sequence diagram showing the OAuth2 flow and embed it in the README"
+
+Claude will call `render_mermaid` with the diagram code, get back a file path, and embed it in your markdown.
+
+## How It Works
 
 ```
-LLM Agent
+Claude/Agent
     |
     | MCP Protocol (JSON-RPC over stdio)
     v
-+-------------------+
-| MCP Media Forge   |
-| Server            |
-+---+---+---+---+---+
-    |   |   |   |
-    v   v   v   v
-  Marp D2  mmdc FFmpeg  Manim  Vega-Lite  agg
-  (slides) (diagrams)  (video) (animation)(charts)(terminal)
-    |   |   |   |       |       |          |
-    v   v   v   v       v       v          v
-  docs/generated/
-    *.svg  *.png  *.pdf  *.gif  *.mp4
+MCP Media Forge (Node.js on host)
+    |
+    | docker exec
+    v
+Rendering Container
+  ├── mmdc       (Mermaid CLI)
+  ├── d2         (D2 diagrams)
+  ├── dot/neato  (Graphviz)
+  └── vl2svg     (Vega-Lite charts)
+    |
+    v
+docs/generated/
+  mermaid-a1b2c3.svg
+  d2-7f8e9a.svg
+  ...
 ```
 
-## Key Design Principles
+**Key principles:**
+- **Text in, file path out** — never returns base64 blobs
+- **Content-hash naming** — same input = same file = free caching + git-friendly
+- **SVG preferred** — vector, small, diffs in git
+- **Docker-contained** — no tools installed on host
+- **Structured errors** — enables LLM self-correction loops
 
-1. **Text-to-image pipelines** — LLM generates text DSL, MCP tool renders it
-2. **Reference-based output** — return file paths, never base64 blobs
-3. **SVG preferred** — vector, small, diffs in git; PNG as fallback
-4. **GIF for animations** — universally rendered, no player needed
-5. **Docker-contained** — all rendering tools inside containers
-6. **Compose existing servers** — build only what's missing
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PROJECT_ROOT` | `cwd()` | Project root for output path resolution |
+| `OUTPUT_DIR` | `docs/generated` | Output directory relative to PROJECT_ROOT |
+| `MEDIA_FORGE_CONTAINER` | `media-forge-renderer` | Docker container name |
+
+## Examples
+
+See [examples/](examples/) for sample inputs, MCP tool calls, and expected results for each tool.
+
+## Development
+
+```bash
+npm install
+npm run build          # Build with tsup
+npm run dev            # Watch mode
+npm test               # Run all tests
+npm run test:unit      # Unit tests only (no Docker needed)
+npm run test:component # Component tests (requires Docker container)
+```
 
 ## Documentation
 
 | Document | Description |
-|---|---|
-| [Research: MCP Landscape](docs/research-mcp-landscape.md) | Existing MCP servers for visual content |
-| [Research: Tools & APIs](docs/research-tools-apis.md) | Evaluation of rendering tools and APIs |
-| [Research: Markdown Embedding](docs/research-markdown-embedding.md) | How to embed rich media in .md files |
+|----------|-------------|
 | [Architecture](docs/architecture.md) | Protocol constraints, tool interfaces, caching, security |
-| [Agent Instructions](docs/agents.md) | Guide for AI coding agents building and maintaining this repo |
-| [Implementation Plan](docs/implementation-plan.md) | 4-phase build plan (Weeks 1-8) |
-| [Verification Plan](docs/verification-plan.md) | Testing strategy, acceptance criteria, benchmarks |
-| [Gemini Analysis](docs/research-gemini-analysis.md) | Original deep research (preserved with review notes) |
-
-## Quick Reference: Priority Stack
-
-| Priority | Tool | MCP Tool Name | Produces | Status |
-|---|---|---|---|---|
-| P0 | Mermaid (mmdc) | `render_mermaid` | Flowcharts, sequence, ER diagrams | Existing MCP servers available |
-| P0 | D2 | `render_d2` | Architecture diagrams | CLI wrapper needed |
-| P1 | Graphviz (DOT) | `render_graphviz` | Dependency graphs, network diagrams | CLI wrapper needed |
-| P1 | Marp | `render_slides` | Slide decks (PNG/PDF) | CLI wrapper needed |
-| P1 | Vega-Lite | `render_chart` | Data charts (bar, line, scatter, etc.) | JSON renderer needed |
-| P2 | Manim | `render_animation` | Technical animations (GIF/MP4) | Python wrapper needed |
-| P2 | Asciinema + agg | `terminal_to_gif` | Terminal demos (GIF) | CLI pipeline needed |
-| P2 | FFmpeg | `assemble_video` | Video assembly (MP4/GIF) | Filtergraph builder needed |
-| P3 | SVG templates | `render_infographic` | Infographics | Custom engine needed |
-| P3 | Excalidraw | `render_excalidraw` | Hand-drawn diagrams | Existing MCP server available |
-
-> **Note on ECharts**: [antvis/mcp-server-chart](https://github.com/antvis/mcp-server-chart) and [hustcc/mcp-echarts](https://github.com/hustcc/mcp-echarts) are existing MCP servers for charts. If Vega-Lite proves insufficient for a use case, these can be composed alongside Media Forge rather than reimplemented. See [Research: Tools & APIs](docs/research-tools-apis.md#echarts) for comparison.
+| [Implementation Plan](docs/implementation-plan.md) | Phased build plan |
+| [Agent Instructions](docs/agents.md) | Guide for AI agents working on this repo |
+| [Verification Plan](docs/verification-plan.md) | Testing strategy and acceptance criteria |
+| [Examples](examples/README.md) | Sample inputs with expected outputs |
 
 ## License
 
-TBD
+[MIT](LICENSE)

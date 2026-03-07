@@ -1,0 +1,16 @@
+name: Version Sync
+
+on:
+  release:
+    types: [published]
+
+permissions: {}
+
+jobs:
+  sync:
+    permissions:
+      contents: write
+    uses: PavelGuzenfeld/standard/.github/workflows/version-sync.yml@main
+    with:
+      tag: ${{ github.event.release.tag_name }}
+      enable_package_json: true
