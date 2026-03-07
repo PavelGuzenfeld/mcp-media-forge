@@ -1,0 +1,20 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Tool rendering performance",
+  "data": {
+    "values": [
+      {"tool": "Mermaid", "time_ms": 450},
+      {"tool": "D2", "time_ms": 380},
+      {"tool": "Graphviz", "time_ms": 120},
+      {"tool": "Vega-Lite", "time_ms": 200}
+    ]
+  },
+  "mark": "bar",
+  "encoding": {
+    "x": {"field": "tool", "type": "nominal", "title": "Tool"},
+    "y": {"field": "time_ms", "type": "quantitative", "title": "Render Time (ms)"},
+    "color": {"field": "tool", "type": "nominal", "legend": null}
+  },
+  "width": 400,
+  "height": 300
+}

@@ -1,0 +1,17 @@
+services:
+  renderer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: media-forge-renderer
+    volumes:
+      - ../docs/generated:/output
+    restart: unless-stopped
+    # Security: no network for local rendering
+    network_mode: none
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G

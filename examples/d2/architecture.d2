@@ -1,0 +1,17 @@
+direction: right
+
+client: Client {
+  browser: Browser
+  mobile: Mobile App
+}
+
+server: Backend {
+  api: API Gateway
+  auth: Auth Service
+  db: PostgreSQL
+}
+
+client.browser -> server.api: HTTPS
+client.mobile -> server.api: HTTPS
+server.api -> server.auth: Verify Token
+server.api -> server.db: Query

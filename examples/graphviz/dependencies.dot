@@ -1,0 +1,10 @@
+digraph dependencies {
+    rankdir=LR;
+    node [shape=box, style=filled, fillcolor=lightblue];
+
+    "mcp-media-forge" -> "@modelcontextprotocol/sdk";
+    "mcp-media-forge" -> "zod";
+    "mcp-media-forge" -> "tsup" [style=dashed, label="dev"];
+    "mcp-media-forge" -> "vitest" [style=dashed, label="dev"];
+    "mcp-media-forge" -> "typescript" [style=dashed, label="dev"];
+}

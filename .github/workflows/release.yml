@@ -1,0 +1,16 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+permissions: {}
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    uses: PavelGuzenfeld/standard/.github/workflows/auto-release.yml@main
+    secrets:
+      app_id: ${{ secrets.RELEASE_APP_ID }}
+      app_private_key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
