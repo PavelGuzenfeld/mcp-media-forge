@@ -47,9 +47,9 @@ npm install
 npm run build
 ```
 
-### 3. Register with Claude Code
+### 3. Register with your MCP client
 
-Add to `~/.claude/settings.json`:
+Any MCP-compatible client (Claude Code, Cursor, VS Code + Copilot, Cline, etc.) can use this server. The standard config:
 
 ```json
 {
@@ -65,18 +65,24 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
+Where to add this depends on your client:
+- **Claude Code**: `~/.claude/settings.json`
+- **Cursor**: MCP settings panel
+- **VS Code (Copilot)**: `.vscode/mcp.json`
+- **Cline**: MCP server configuration
+
 ### 4. Use it
 
-Ask Claude to generate a diagram:
+Ask your AI assistant to generate a diagram:
 
 > "Create a sequence diagram showing the OAuth2 flow and embed it in the README"
 
-Claude will call `render_mermaid` with the diagram code, get back a file path, and embed it in your markdown.
+The agent will call `render_mermaid` with the diagram code, get back a file path, and embed it in your markdown.
 
 ## How It Works
 
 ```
-Claude / AI Agent
+AI Agent (any MCP client)
     |
     | MCP Protocol (JSON-RPC over stdio)
     v
