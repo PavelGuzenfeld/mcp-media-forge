@@ -41,12 +41,11 @@ export async function render_chart(
 
   const args =
     format === "svg"
-      ? ["vl2svg", "/dev/stdin", container_output]
+      ? ["vl2svg", container_output]
       : [
           "vl2png",
-          "/dev/stdin",
           container_output,
-          ...(scale ? ["--scale", String(scale)] : []),
+          ...(scale ? [String(scale)] : []),
         ];
 
   const result = await docker_exec(args, { stdin: spec_json, timeout: 15_000 });

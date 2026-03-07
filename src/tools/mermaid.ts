@@ -41,8 +41,10 @@ export async function render_mermaid(
       theme,
       "-b",
       "transparent",
+      "-p",
+      "/root/.mmdc-config.json",
     ],
-    { stdin: code, timeout: 10_000 }
+    { stdin: code, timeout: 30_000 }
   );
 
   if (!result.success) {

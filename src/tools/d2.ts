@@ -31,10 +31,44 @@ export async function render_d2(
   const output_path = resolve_output_path("d2", params, format);
   const container_output = `/output/${path.basename(output_path)}`;
 
-  const args = ["d2", "--layout", layout, "-", container_output];
-  if (theme !== undefined) args.splice(2, 0, "--theme", String(theme));
+  // D2 PNG requires Playwright (network download). Render SVG first, then convert.
+  const is_png = format === "png";
+  const svg_output = is_png
+    ? container_output.replace(/\.png$/, ".svg")
+    : container_output;
+
+  const args = ["d2", "--layout", layout];
+  if (theme !== undefined) args.push("--theme", String(theme));
+  args.push("-", svg_output);
 
   const result = await docker_exec(args, { stdin: code, timeout: 10_000 });
+
+  // D2 creates files with restrictive permissions — fix for host access
+  if (result.success) {
+    await docker_exec(["chmod", "644", svg_output], { timeout: 3_000 });
+  }
+
+  // Convert SVG → PNG using Chromium if needed
+  if (result.success && is_png) {
+    const png_filename = path.basename(container_output);
+    const convert = await docker_exec(
+      [
+        "sh",
+        "-c",
+        `cd /output && chromium --headless --no-sandbox --disable-gpu --screenshot=${png_filename} --window-size=1200,900 file://${svg_output}`,
+      ],
+      { timeout: 15_000 }
+    );
+    if (!convert.success) {
+      return {
+        status: "error",
+        error_type: "rendering_error",
+        error_message: convert.stderr.replace(/.*ERROR:dbus.*\n?/g, "").trim() || "SVG to PNG conversion failed",
+        suggestion: "Try rendering as SVG instead",
+      };
+    }
+    await docker_exec(["chmod", "644", container_output], { timeout: 3_000 });
+  }
 
   if (!result.success) {
     const line_match = result.stderr.match(/line (\d+)/i);
