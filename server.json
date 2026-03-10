@@ -6,12 +6,12 @@
     "url": "https://github.com/PavelGuzenfeld/mcp-media-forge",
     "source": "github"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "mcp-media-forge",
-      "version": "0.0.1",
+      "version": "0.1.0",
       "transport": {
         "type": "stdio"
       }

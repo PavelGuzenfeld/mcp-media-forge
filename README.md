@@ -1,5 +1,9 @@
 # MCP Media Forge
 
+[![npm](https://img.shields.io/npm/v/mcp-media-forge)](https://www.npmjs.com/package/mcp-media-forge)
+[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 MCP server that generates diagrams, charts, and visual documentation from text DSLs -- designed for AI coding agents to embed into Markdown.
 
 LLM agents call tools like `render_mermaid` or `render_d2` with text input, and get back file paths to SVG/PNG assets ready to embed in docs.
@@ -40,9 +44,19 @@ cd docker
 docker compose up -d
 ```
 
-### 2. Install and build the MCP server
+### 2. Install the MCP server
+
+**Option A — npx (no install)**
 
 ```bash
+npx mcp-media-forge
+```
+
+**Option B — Clone and build**
+
+```bash
+git clone https://github.com/PavelGuzenfeld/mcp-media-forge.git
+cd mcp-media-forge
 npm install
 npm run build
 ```
