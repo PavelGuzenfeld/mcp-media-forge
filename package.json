@@ -1,6 +1,7 @@
 {
   "name": "mcp-media-forge",
   "version": "0.0.1",
+  "mcpName": "io.github.pavelguzenfeld/media-forge",
   "description": "MCP server for generating diagrams, charts, presentations, and animations for Markdown documentation",
   "type": "module",
   "main": "dist/index.js",
