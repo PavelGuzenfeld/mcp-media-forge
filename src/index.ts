@@ -15,7 +15,7 @@ import type { MediaToolResult } from "./core/types.js";
 
 const server = new McpServer({
   name: "mcp-media-forge",
-  version: "0.0.1",
+  version: "0.2.0",
 });
 
 function result_to_mcp(result: MediaToolResult) {

@@ -11,7 +11,8 @@ describe("cache_lookup", () => {
   });
 
   afterEach(() => {
-    rmSync(TEST_DIR, { recursive: true, force: true });
+    try { rmSync(TEST_DIR, { recursive: true, force: true }); }
+    catch { /* parallel cleanup race — harmless */ }
   });
 
   it("returns null for missing file", () => {
