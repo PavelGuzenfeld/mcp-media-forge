@@ -3,6 +3,7 @@ import path from "node:path";
 import { cache_lookup } from "../core/cache.js";
 import { resolve_output_path, relative_path } from "../core/output.js";
 import { docker_exec, check_tool } from "../core/docker.js";
+import { validate_d2, validation_error } from "../core/validate.js";
 import type { MediaToolResult } from "../core/types.js";
 
 const LAYOUTS = ["dagre", "elk", "tala"] as const;
@@ -14,6 +15,11 @@ export async function render_d2(
   theme?: number,
   layout: Layout = "dagre"
 ): Promise<MediaToolResult> {
+  // Pre-validate: catch Mermaid-D2 confusion, unbalanced braces, etc.
+  const validation = validate_d2(code);
+  const error = validation_error(validation, "https://d2lang.com/tour/intro");
+  if (error) return error;
+
   const params = { code, format, theme, layout };
   const cached = cache_lookup("d2", params, format);
   if (cached) return cached;
@@ -89,5 +95,9 @@ export async function render_d2(
     format,
     size_bytes: stats.size,
     embed_markdown: `![Diagram](./${rel})`,
+    warning:
+      validation.warnings.length > 0
+        ? validation.warnings.join("; ")
+        : undefined,
   };
 }

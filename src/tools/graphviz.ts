@@ -3,6 +3,7 @@ import path from "node:path";
 import { cache_lookup } from "../core/cache.js";
 import { resolve_output_path, relative_path } from "../core/output.js";
 import { docker_exec, check_tool } from "../core/docker.js";
+import { validate_graphviz, validation_error } from "../core/validate.js";
 import type { MediaToolResult } from "../core/types.js";
 
 const ENGINES = ["dot", "neato", "fdp", "sfdp", "twopi", "circo"] as const;
@@ -13,6 +14,14 @@ export async function render_graphviz(
   engine: Engine = "dot",
   format: "svg" | "png" = "svg"
 ): Promise<MediaToolResult> {
+  // Pre-validate: catch missing graph wrapper, arrow mismatches, unbalanced braces
+  const validation = validate_graphviz(dot_source);
+  const error = validation_error(
+    validation,
+    "https://graphviz.org/doc/info/lang.html"
+  );
+  if (error) return error;
+
   const params = { dot_source, engine, format };
   const cached = cache_lookup("graphviz", params, format);
   if (cached) return cached;
@@ -55,5 +64,9 @@ export async function render_graphviz(
     format,
     size_bytes: stats.size,
     embed_markdown: `![Diagram](./${rel})`,
+    warning:
+      validation.warnings.length > 0
+        ? validation.warnings.join("; ")
+        : undefined,
   };
 }

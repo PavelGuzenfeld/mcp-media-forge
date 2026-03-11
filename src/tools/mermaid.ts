@@ -3,6 +3,7 @@ import path from "node:path";
 import { cache_lookup } from "../core/cache.js";
 import { resolve_output_path, relative_path } from "../core/output.js";
 import { docker_exec, check_tool } from "../core/docker.js";
+import { validate_mermaid, validation_error } from "../core/validate.js";
 import type { MediaToolResult } from "../core/types.js";
 
 const THEMES = ["default", "dark", "forest", "neutral"] as const;
@@ -13,6 +14,14 @@ export async function render_mermaid(
   format: "svg" | "png" = "svg",
   theme: Theme = "default"
 ): Promise<MediaToolResult> {
+  // Pre-validate: catch common mistakes before Docker round-trip
+  const validation = validate_mermaid(code);
+  const error = validation_error(
+    validation,
+    "https://mermaid.js.org/syntax/"
+  );
+  if (error) return error;
+
   const params = { code, format, theme };
   const cached = cache_lookup("mermaid", params, format);
   if (cached) return cached;
@@ -60,17 +69,19 @@ export async function render_mermaid(
 
   const rel = relative_path(output_path);
   const stats = statSync(output_path);
-  const media_result: MediaToolResult = {
+  const warnings: string[] = validation.warnings.slice();
+  if (stats.size > 5_000_000) {
+    warnings.push(
+      `File size ${(stats.size / 1_000_000).toFixed(1)}MB exceeds 5MB`
+    );
+  }
+
+  return {
     status: "completed",
     output_path: rel,
     format,
     size_bytes: stats.size,
     embed_markdown: `![Diagram](./${rel})`,
+    warning: warnings.length > 0 ? warnings.join("; ") : undefined,
   };
-
-  if (stats.size > 5_000_000) {
-    media_result.warning = `File size ${(stats.size / 1_000_000).toFixed(1)}MB exceeds 5MB`;
-  }
-
-  return media_result;
 }
