@@ -4,12 +4,13 @@ on:
   push:
     branches: [master]
 
-permissions: {}
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
 
 jobs:
   release:
-    permissions:
-      contents: write
     uses: PavelGuzenfeld/standard/.github/workflows/auto-release.yml@main
     secrets:
       app_id: ${{ secrets.RELEASE_APP_ID }}
