@@ -3,6 +3,7 @@ import path from "node:path";
 import { cache_lookup } from "../core/cache.js";
 import { resolve_output_path, relative_path } from "../core/output.js";
 import { docker_exec, check_tool } from "../core/docker.js";
+import { validate_vegalite, validation_error } from "../core/validate.js";
 import type { MediaToolResult } from "../core/types.js";
 
 export async function render_chart(
@@ -10,17 +11,13 @@ export async function render_chart(
   format: "svg" | "png" = "svg",
   scale?: number
 ): Promise<MediaToolResult> {
-  // Validate JSON before rendering
-  try {
-    JSON.parse(spec_json);
-  } catch {
-    return {
-      status: "error",
-      error_type: "syntax_error",
-      error_message: "Invalid JSON in Vega-Lite spec",
-      suggestion: "Validate your JSON and check the Vega-Lite schema at https://vega.github.io/vega-lite/",
-    };
-  }
+  // Pre-validate: JSON parse, required fields, data size, schema presence
+  const validation = validate_vegalite(spec_json);
+  const error = validation_error(
+    validation,
+    "https://vega.github.io/vega-lite/"
+  );
+  if (error) return error;
 
   const params = { spec_json, format, scale };
   const cached = cache_lookup("vegalite", params, format);
@@ -69,5 +66,9 @@ export async function render_chart(
     format,
     size_bytes: stats.size,
     embed_markdown: `![Chart](./${rel})`,
+    warning:
+      validation.warnings.length > 0
+        ? validation.warnings.join("; ")
+        : undefined,
   };
 }
