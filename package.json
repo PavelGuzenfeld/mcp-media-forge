@@ -1,6 +1,6 @@
 {
   "name": "mcp-media-forge",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "mcpName": "io.github.PavelGuzenfeld/media-forge",
   "description": "MCP server for generating diagrams, charts, presentations, and animations for Markdown documentation",
   "type": "module",
@@ -29,7 +29,11 @@
     "documentation",
     "ai-agent",
     "cursor",
-    "copilot"
+    "copilot",
+    "html",
+    "slides",
+    "presentations",
+    "charts"
   ],
   "author": "Pavel Guzenfeld",
   "license": "MIT",

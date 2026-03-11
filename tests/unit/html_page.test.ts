@@ -15,7 +15,7 @@ describe("render_html_page", () => {
     expect(result.format).toBe("html");
     expect(result.output_path).toMatch(/\.html$/);
     expect(result.size_bytes).toBeGreaterThan(0);
-    expect(result.embed_markdown).toContain("Test Page");
+    expect(result.embed_markdown).toMatch(/html_page-[a-f0-9]+\.html/);
   });
 
   it("embeds the theme CSS", () => {
