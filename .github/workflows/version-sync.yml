@@ -9,8 +9,11 @@ permissions: {}
 jobs:
   sync:
     permissions:
-      contents: write
+      contents: read
     uses: PavelGuzenfeld/standard/.github/workflows/version-sync.yml@main
     with:
       tag: ${{ github.event.release.tag_name }}
       enable_package_json: true
+    secrets:
+      app_id: ${{ secrets.RELEASE_APP_ID }}
+      app_private_key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
